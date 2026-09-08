@@ -90,31 +90,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);height:100vh
 .code-box{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:#a9d1a9;font-family:var(--mono);font-size:10px;padding:10px;resize:none;width:100%;line-height:1.6}
 .code-actions{display:flex;gap:8px;margin-top:10px;flex-shrink:0}
 .statusbar{background:var(--accent2);height:22px;display:flex;align-items:center;padding:0 14px;font-size:10px;color:#c8daff;flex-shrink:0;gap:16px}
-/* ===== Temas Flat (aditivo: solo se aplican cuando se elige el estilo en la barra; el modo Clasico queda intacto) ===== */
-#frameSim.laf-flatlight{--f-bg:#f3f3f3;--f-field:#ffffff;--f-border:#c6c9ce;--f-text:#1f2328;--f-accent:#3d7eff;--f-btn:#e8ebef;--f-head:#eceef1;--f-title:#e6e8eb;--f-titletext:#1f2328}
-#frameSim.laf-flatdark{--f-bg:#3c3f41;--f-field:#45494a;--f-border:#585b5d;--f-text:#dcdcdc;--f-accent:#4b9fff;--f-btn:#4c5052;--f-head:#3c3f41;--f-title:#2b2b2b;--f-titletext:#dcdcdc}
-#frameSim[class*="laf-flat"] .frame-titlebar{background:var(--f-title);border-bottom:1px solid var(--f-border)}
-#frameSim[class*="laf-flat"] .frame-title-text{color:var(--f-titletext)}
-#frameSim[class*="laf-flat"] .wtb{background:transparent;border:none;color:var(--f-titletext);width:18px}
-#frameSim[class*="laf-flat"] .frame-body{background:var(--f-bg);border:1px solid var(--f-border);border-top:none}
-#frameSim[class*="laf-flat"] .w98-label{color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-input,#frameSim[class*="laf-flat"] .w98-textarea,#frameSim[class*="laf-flat"] .w98-combo,#frameSim[class*="laf-flat"] .w98-list,#frameSim[class*="laf-flat"] .w98-spinner input,#frameSim[class*="laf-flat"] .w98-scrollpane{background:var(--f-field);border:1px solid var(--f-border);color:var(--f-text);border-radius:4px}
-#frameSim[class*="laf-flat"] .w98-btn{background:var(--f-btn);border:1px solid var(--f-border);color:var(--f-text);border-radius:4px}
-#frameSim[class*="laf-flat"] .w98-check,#frameSim[class*="laf-flat"] .w98-radio{color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-table{background:var(--f-field);color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-table th{background:var(--f-head);border:1px solid var(--f-border);color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-table td{border:1px solid var(--f-border);color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-table-wrap{background:var(--f-field);border:1px solid var(--f-border);border-radius:4px}
-#frameSim[class*="laf-flat"] .w98-spinner-btns span{background:var(--f-btn);border:1px solid var(--f-border);color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-progress{background:var(--f-field);border:1px solid var(--f-border);border-radius:4px}
-#frameSim[class*="laf-flat"] .w98-progress-bar{background:var(--f-accent)}
-#frameSim[class*="laf-flat"] .w98-tabpane-tab{background:var(--f-btn);border:1px solid var(--f-border);border-bottom:none;color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-tabpane-tab.active{background:var(--f-bg);border-bottom:1px solid var(--f-bg);font-weight:bold}
-#frameSim[class*="laf-flat"] .w98-tabpane-body{background:var(--f-bg);border:1px solid var(--f-border)}
-#frameSim[class*="laf-flat"] .w98-menubar{background:var(--f-title);border-bottom:1px solid var(--f-border);color:var(--f-text)}
-#frameSim[class*="laf-flat"] .w98-separator-h{border-top:1px solid var(--f-border);border-bottom:none}
-#frameSim[class*="laf-flat"] .w98-separator-v{border-left:1px solid var(--f-border);border-right:none}
-#frameSim[class*="laf-flat"] .w98-slider input[type=range]{accent-color:var(--f-accent)}
 </style>
 </head>
 <body>
@@ -187,13 +162,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);height:100vh
         <option value="border">BorderLayout</option>
         <option value="grid">GridLayout</option>
         <option value="gridbag">GridBagLayout</option>
-      </select>
-      <div class="sep"></div>
-      <label>Estilo:</label>
-      <select id="lookFeel" onchange="applyLookFeel()">
-        <option value="default">Clasico (predeterminado)</option>
-        <option value="flatlight">Flat Claro</option>
-        <option value="flatdark">Flat Oscuro</option>
       </select>
     </div>
     <div class="canvas-scroll" ondragover="event.preventDefault()" ondrop="dropOnCanvas(event)">
@@ -643,19 +611,6 @@ function resizeFrame(){
 }
 resizeFrame();
 
-// Aplica el tema visual (Look & Feel) al preview del canvas. Aditivo: 'default' deja el modo clasico intacto.
-function applyLookFeel(){
-  const sel=document.getElementById('lookFeel');
-  const val=sel?sel.value:'default';
-  const sim=document.getElementById('frameSim');
-  if(!sim)return;
-  sim.classList.remove('laf-flatlight','laf-flatdark');
-  if(val==='flatlight')sim.classList.add('laf-flatlight');
-  else if(val==='flatdark')sim.classList.add('laf-flatdark');
-  const codePanel=document.getElementById('panel-code');
-  if(codePanel&&codePanel.classList.contains('active'))generateCode();
-}
-
 function switchTab(tab){
   document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
@@ -927,18 +882,6 @@ function generateCode(){
 
   const imp = [...imports].map(i=>`import ${i};`).join('\n');
 
-  // === LOOK & FEEL (FlatLaf) - aditivo: solo se inyecta si se elige un tema Flat ===
-  const lookFeel = document.getElementById('lookFeel') ? document.getElementById('lookFeel').value : 'default';
-  let lafImportLine = '';
-  let lafSetup = '';
-  if (lookFeel === 'flatlight') {
-    lafImportLine = '\nimport com.formdev.flatlaf.FlatLightLaf;';
-    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatLightLaf.setup();\n';
-  } else if (lookFeel === 'flatdark') {
-    lafImportLine = '\nimport com.formdev.flatlaf.FlatDarkLaf;';
-    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatDarkLaf.setup();\n';
-  }
-
   const formattedUserImports = userImports.trim() ? userImports : 
 `    //  ESCRIBE TUS IMPORTS AQUI (Ej: import java.io.*;)
     // ----------------------------------------------------`;
@@ -958,7 +901,7 @@ function generateCode(){
         // TODO: limpiar campos del formulario
     }`;
 
-  const code = `${imp}${lafImportLine}
+  const code = `${imp}
 
 // [USER_IMPORTS_START]
 ${formattedUserImports}
@@ -974,7 +917,7 @@ ${formattedUserDecls}
 // [USER_DECLS_END]
 
     public ${className}(Gestion gestion) {
-${lafSetup}        this.gestion = gestion;
+        this.gestion = gestion;
         setTitle("${title}");
         setSize(${w}, ${h});
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1075,11 +1018,6 @@ function parseJavaFile(src, filename){
   else if(src.includes('GridLayout'))layout='grid';
   else if(src.includes('GridBagLayout'))layout='gridbag';
   else if(src.includes('BorderLayout'))layout='border';
-
-  // Detecta el Look & Feel FlatLaf para restaurar el selector de estilo
-  let lookFeel='default';
-  if(src.includes('FlatLightLaf.setup'))lookFeel='flatlight';
-  else if(src.includes('FlatDarkLaf.setup'))lookFeel='flatdark';
 
   const javaToType={
     JLabel:'label', JTextField:'textfield', JPasswordField:'password',
@@ -1236,14 +1174,6 @@ function parseJavaFile(src, filename){
   document.getElementById('frameW').value=fw;
   document.getElementById('frameH').value=fh;
   document.getElementById('layoutType').value=layout;
-  // Restaura el estilo (Look & Feel) detectado en el archivo
-  if(document.getElementById('lookFeel')){
-    document.getElementById('lookFeel').value=lookFeel;
-    const sim=document.getElementById('frameSim');
-    sim.classList.remove('laf-flatlight','laf-flatdark');
-    if(lookFeel==='flatlight')sim.classList.add('laf-flatlight');
-    else if(lookFeel==='flatdark')sim.classList.add('laf-flatdark');
-  }
   resizeFrame();
 
   idCounter=newCounter;
