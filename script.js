@@ -1,4 +1,4 @@
-// Obtener API de VS Code
+ // Obtener API de VS Code
 const vscode = typeof acquireVsCodeApi === 'function' ? acquireVsCodeApi() : null;
 
 // Escuchar si VS Code envía código Java abierto
@@ -405,17 +405,24 @@ function resizeFrame(){
 }
 resizeFrame();
 
-// Aplica el tema visual (Look & Feel) al preview del canvas. Aditivo: 'default' deja el modo clasico intacto.
-function applyLookFeel(){
-  const sel=document.getElementById('lookFeel');
-  const val=sel?sel.value:'default';
-  const sim=document.getElementById('frameSim');
-  if(!sim)return;
-  sim.classList.remove('laf-flatlight','laf-flatdark');
-  if(val==='flatlight')sim.classList.add('laf-flatlight');
-  else if(val==='flatdark')sim.classList.add('laf-flatdark');
-  const codePanel=document.getElementById('panel-code');
-  if(codePanel&&codePanel.classList.contains('active'))generateCode();
+// Aplica el tema visual (Look & Feel) al preview del canvas.
+function applyLookFeel() {
+  const sel = document.getElementById('lookFeel');
+  const val = sel ? sel.value : 'default';
+  const sim = document.getElementById('frameSim');
+  if (!sim) return;
+
+  // Limpiar todas las clases de temas anteriores
+  sim.classList.remove('laf-flatlight', 'laf-flatdark', 'laf-flatintellij', 'laf-flatdarcula');
+
+  // Aplicar la clase visual correspondiente
+  if (val === 'flatlight') sim.classList.add('laf-flatlight');
+  else if (val === 'flatdark') sim.classList.add('laf-flatdark');
+  else if (val === 'flatintellij') sim.classList.add('laf-flatintellij');
+  else if (val === 'flatdarcula') sim.classList.add('laf-flatdarcula');
+
+  const codePanel = document.getElementById('panel-code');
+  if (codePanel && codePanel.classList.contains('active')) generateCode();
 }
 
 function switchTab(tab){
@@ -694,12 +701,18 @@ function generateCode(){
   let lafImportLine = '';
   let lafSetup = '';
   if (lookFeel === 'flatlight') {
-    lafImportLine = '\nimport com.formdev.flatlaf.FlatLightLaf;';
-    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatLightLaf.setup();\n';
+    lafImportLine = '\nimport com.formdev.flatlaf.FlatLightLaf;\nimport javax.swing.UIManager;';
+    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatLightLaf.setup();\n        getContentPane().setBackground(UIManager.getColor("Panel.background"));\n';
   } else if (lookFeel === 'flatdark') {
-    lafImportLine = '\nimport com.formdev.flatlaf.FlatDarkLaf;';
-    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatDarkLaf.setup();\n';
-  }
+    lafImportLine = '\nimport com.formdev.flatlaf.FlatDarkLaf;import javax.swing.UIManager;';
+    lafSetup = '        // Look & Feel FlatLaf (requiere la libreria flatlaf en el classpath)\n        FlatDarkLaf.setup();\n        getContentPane().setBackground(UIManager.getColor("Panel.background"));\n';
+  }else if (lookFeel === 'flatintellij') {
+    lafImportLine = '\nimport com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;import javax.swing.UIManager;';
+    lafSetup = '        FlatNordIJTheme.setup();\n        getContentPane().setBackground(UIManager.getColor("Panel.background"));\n';
+} else if (lookFeel === 'flatdarcula') {
+    lafImportLine = '\nimport com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;import javax.swing.UIManager;';
+    lafSetup = '        FlatDraculaIJTheme.setup();\n        getContentPane().setBackground(UIManager.getColor("Panel.background"));\n';
+}
 
   const formattedUserImports = userImports.trim() ? userImports : 
 `    //  ESCRIBE TUS IMPORTS AQUI (Ej: import java.io.*;)
@@ -842,6 +855,8 @@ function parseJavaFile(src, filename){
   let lookFeel='default';
   if(src.includes('FlatLightLaf.setup'))lookFeel='flatlight';
   else if(src.includes('FlatDarkLaf.setup'))lookFeel='flatdark';
+  else if (src.includes('FlatIntelliJLaf.setup')) lookFeel = 'flatintellij';
+  else if (src.includes('FlatDarculaLaf.setup')) lookFeel = 'flatdarcula';
 
   const javaToType={
     JLabel:'label', JTextField:'textfield', JPasswordField:'password',
@@ -999,14 +1014,18 @@ function parseJavaFile(src, filename){
   document.getElementById('frameH').value=fh;
   document.getElementById('layoutType').value=layout;
   // Restaura el estilo (Look & Feel) detectado en el archivo
-  if(document.getElementById('lookFeel')){
-    document.getElementById('lookFeel').value=lookFeel;
-    const sim=document.getElementById('frameSim');
-    sim.classList.remove('laf-flatlight','laf-flatdark');
-    if(lookFeel==='flatlight')sim.classList.add('laf-flatlight');
-    else if(lookFeel==='flatdark')sim.classList.add('laf-flatdark');
+if (document.getElementById('lookFeel')) {
+  document.getElementById('lookFeel').value = lookFeel;
+  const sim = document.getElementById('frameSim');
+  if (sim) {
+    sim.classList.remove('laf-flatlight', 'laf-flatdark', 'laf-flatintellij', 'laf-flatdarcula');
+    if (lookFeel === 'flatlight') sim.classList.add('laf-flatlight');
+    else if (lookFeel === 'flatdark') sim.classList.add('laf-flatdark');
+    else if (lookFeel === 'flatintellij') sim.classList.add('laf-flatintellij');
+    else if (lookFeel === 'flatdarcula') sim.classList.add('laf-flatdarcula');
   }
-  resizeFrame();
+}
+resizeFrame();
 
   idCounter=newCounter;
 

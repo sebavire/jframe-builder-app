@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="topbar">
+<header class="topbar">
   <div class="logo">JFrame Builder <em>genera codigo Java para VS Code</em></div>
   <div class="tbactions">
     <button class="btn" onclick="clearAll()">Limpiar</button>
@@ -15,9 +15,9 @@
     <input type="file" id="fileInput" accept=".java" style="display:none" onchange="loadJavaFile(event)">
     <button class="btn btn-primary" onclick="generateCode();switchTab('code')">Generar Codigo Java</button>
   </div>
-</div>
-<div class="main">
-  <div class="palette">
+</header>
+<main class="main">
+  <aside class="palette">
     <div class="pal-section">
       <div class="pal-label">Texto</div>
       <div class="comp-item" draggable="true" ondragstart="dragStart(event,'label')"><div class="comp-icon">Aa</div>JLabel</div>
@@ -57,9 +57,9 @@
       <div class="comp-item" draggable="true" ondragstart="dragStart(event,'tabbedpane')"><div class="comp-icon" style="font-size:7px">TAB</div>JTabbedPane</div>
       <div class="comp-item" draggable="true" ondragstart="dragStart(event,'separator')"><div class="comp-icon" style="font-size:7px">—</div>JSeparator</div>
     </div>
-  </div>
+</aside>
 
-  <div class="center">
+  <center class="center">
     <div class="ctoolbar">
       <label>Titulo:</label>
       <input type="text" id="frameTitle" value="Mi Formulario" oninput="updateFrameTitle()">
@@ -83,6 +83,8 @@
         <option value="default">Clasico (predeterminado)</option>
         <option value="flatlight">Flat Claro</option>
         <option value="flatdark">Flat Oscuro</option>
+        <option value="flatintellij">FlatLaf IntelliJ</option>
+        <option value="flatdarcula">FlatLaf Darcula</option>
       </select>
     </div>
     <div class="canvas-scroll" ondragover="event.preventDefault()" ondrop="dropOnCanvas(event)">
@@ -96,9 +98,9 @@
         <div class="frame-body" id="frameBody"></div>
       </div>
     </div>
-  </div>
+  </center>
 
-  <div class="right">
+  <aside class="right">
     <div class="right-tabs">
       <div class="rtab active" onclick="switchTab('props')" id="tab-props">Propiedades</div>
       <div class="rtab" onclick="switchTab('code')" id="tab-code">Codigo Java</div>
@@ -114,8 +116,8 @@
         <button class="btn" onclick="downloadCode()">Guardar .java</button>
       </div>
     </div>
-  </div>
-</div>
+  </aside>
+</main>
 <div class="statusbar">
   <span id="statusComp">0 componentes</span>
   <span>|</span>
@@ -125,7 +127,7 @@
 </div>
 
 <script src="script.js">
- 
+  
 </script>
 </body>
 </html>

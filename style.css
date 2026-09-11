@@ -108,3 +108,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--mono);height:100vh
 #frameSim[class*="laf-flat"] .w98-separator-h{border-top:1px solid var(--f-border);border-bottom:none}
 #frameSim[class*="laf-flat"] .w98-separator-v{border-left:1px solid var(--f-border);border-right:none}
 #frameSim[class*="laf-flat"] .w98-slider input[type=range]{accent-color:var(--f-accent)}
+/* Dracula: Tonos violetas/oscuros profundos */
+#frameSim.laf-flatdarcula{--f-bg:#282a36;--f-field:#44475a;--f-border:#6272a4;--f-text:#f8f8f2;--f-accent:#bd93f9;--f-btn:#44475a;--f-head:#21222c;--f-title:#191a21;--f-titletext:#bd93f9}
+
+/* Nord / Cyan: Tonos azulados y claros distintos */
+#frameSim.laf-flatintellij{--f-bg:#e5e9f0;--f-field:#ffffff;--f-border:#81a1c1;--f-text:#2e3440;--f-accent:#88c0d0;--f-btn:#d8dee9;--f-head:#d8dee9;--f-title:#c8d0e0;--f-titletext:#2e3440}
