@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>JFrame Form Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">JFrame Builder <em>genera codigo Java para VS Code</em></div>
+  <div class="tbactions">
+    <button class="btn" onclick="clearAll()">Limpiar</button>
+    <button class="btn" onclick="document.getElementById('fileInput').click()" title="Abrir archivo .java generado por esta herramienta">&#128194; Abrir .java</button>
+    <input type="file" id="fileInput" accept=".java" style="display:none" onchange="loadJavaFile(event)">
+    <button class="btn btn-primary" onclick="generateCode();switchTab('code')">Generar Codigo Java</button>
+  </div>
+</div>
+<div class="main">
+  <div class="palette">
+    <div class="pal-section">
+      <div class="pal-label">Texto</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'label')"><div class="comp-icon">Aa</div>JLabel</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'textfield')"><div class="comp-icon">___</div>JTextField</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'password')"><div class="comp-icon">***</div>JPasswordField</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'textarea')"><div class="comp-icon">|||</div>JTextArea</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Acciones</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'button')"><div class="comp-icon">[OK]</div>JButton</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'checkbox')"><div class="comp-icon">[v]</div>JCheckBox</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'radio')"><div class="comp-icon">(o)</div>JRadioButton</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Navegación</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'menubar')"><div class="comp-icon" style="font-size:7px">MENU</div>JMenuBar</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Seleccion</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'combobox')"><div class="comp-icon">[v]</div>JComboBox</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'list')"><div class="comp-icon">---</div>JList</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Datos</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'table')"><div class="comp-icon" style="font-size:7px">TBL</div>JTable</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'scrollpane')"><div class="comp-icon" style="font-size:7px">SCR</div>JScrollPane</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Controles</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'spinner')"><div class="comp-icon" style="font-size:7px">123</div>JSpinner</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'slider')"><div class="comp-icon" style="font-size:7px">—o—</div>JSlider</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'progressbar')"><div class="comp-icon" style="font-size:7px">▓░░</div>JProgressBar</div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-label">Contenedor</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'panel')"><div class="comp-icon">[ ]</div>JPanel</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'tabbedpane')"><div class="comp-icon" style="font-size:7px">TAB</div>JTabbedPane</div>
+      <div class="comp-item" draggable="true" ondragstart="dragStart(event,'separator')"><div class="comp-icon" style="font-size:7px">—</div>JSeparator</div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="ctoolbar">
+      <label>Titulo:</label>
+      <input type="text" id="frameTitle" value="Mi Formulario" oninput="updateFrameTitle()">
+      <div class="sep"></div>
+      <label>Ancho:</label>
+      <input type="number" id="frameW" value="500" min="200" max="1200" oninput="resizeFrame()">
+      <label>Alto:</label>
+      <input type="number" id="frameH" value="380" min="150" max="900" oninput="resizeFrame()">
+      <div class="sep"></div>
+      <label>Layout:</label>
+      <select id="layoutType">
+        <option value="null">Absolute (null)</option>
+        <option value="flow">FlowLayout</option>
+        <option value="border">BorderLayout</option>
+        <option value="grid">GridLayout</option>
+        <option value="gridbag">GridBagLayout</option>
+      </select>
+      <div class="sep"></div>
+      <label>Estilo:</label>
+      <select id="lookFeel" onchange="applyLookFeel()">
+        <option value="default">Clasico (predeterminado)</option>
+        <option value="flatlight">Flat Claro</option>
+        <option value="flatdark">Flat Oscuro</option>
+      </select>
+    </div>
+    <div class="canvas-scroll" ondragover="event.preventDefault()" ondrop="dropOnCanvas(event)">
+      <div class="frame-sim" id="frameSim">
+        <div class="frame-titlebar">
+          <span class="frame-title-text" id="frameTitleBar">Mi Formulario</span>
+          <div class="frame-wtbs">
+            <div class="wtb">_</div><div class="wtb">[]</div><div class="wtb">X</div>
+          </div>
+        </div>
+        <div class="frame-body" id="frameBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="right-tabs">
+      <div class="rtab active" onclick="switchTab('props')" id="tab-props">Propiedades</div>
+      <div class="rtab" onclick="switchTab('code')" id="tab-code">Codigo Java</div>
+    </div>
+    <div class="rpanel active" id="panel-props">
+      <div class="no-sel" id="noSel">Arrastra componentes<br>al canvas y haz clic<br>para editar propiedades</div>
+      <div id="propsContent" style="display:none"></div>
+    </div>
+    <div class="code-panel" id="panel-code">
+      <textarea class="code-box" id="codeBox" readonly spellcheck="false">// Haz clic en "Generar Codigo Java"</textarea>
+      <div class="code-actions">
+        <button class="btn btn-primary" onclick="copyCode()" style="flex:1">Copiar codigo</button>
+        <button class="btn" onclick="downloadCode()">Guardar .java</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="statusbar">
+  <span id="statusComp">0 componentes</span>
+  <span>|</span>
+  <span id="statusSel">Ninguno seleccionado</span>
+  <span>|</span>
+  <span>Drag and Drop activo</span>
+</div>
+
+<script src="script.js">
+ 
+</script>
+</body>
+</html>
