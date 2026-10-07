@@ -50,6 +50,7 @@ const defaults={
   textfield:{w:120,h:22,text:'',varName:'txtField'},
   password:{w:120,h:22,text:'',varName:'txtPass'},
   textarea:{w:150,h:80,text:'',varName:'txtArea'},
+  image:{w:100,h:100,text:'',varName:'imgLbl',imagePath:'logo.png'},
   button:{w:90,h:25,text:'Aceptar',varName:'btn'},
   checkbox:{w:100,h:20,text:'Opcion',varName:'chk'},
   radio:{w:100,h:20,text:'Opcion',varName:'rdb'},
@@ -83,6 +84,7 @@ function dropOnCanvas(e){
 
   const comp={id,type:draggingType,
     x:posX, y:posY, w:posW, h:d.h, text:d.text, varName:d.varName+id,
+    imagePath: d.imagePath || '',
     fontSize:11,enabled:true,visible:true,tooltip:'',
     items:'Item 1,Item 2,Item 3',
     columns:d.columns||'Col1,Col2,Col3',
@@ -101,7 +103,7 @@ function dropOnCanvas(e){
   updateStatus();
 }
 
-const NEEDS_OVERLAY=['combobox','list','textfield','password','textarea','button','checkbox','radio','spinner','slider','progressbar','tabbedpane','menubar'];
+const NEEDS_OVERLAY=['combobox','list','textfield','password','textarea','button','checkbox','radio','spinner','slider','progressbar','tabbedpane','menubar','image'];
 
 function getCompHTML(comp){
   const fs = comp.fontSize || 11;
@@ -183,6 +185,15 @@ function getCompHTML(comp){
       inner = `<div class="w98-menubar" style="${customStyles}">${menus.map(m=>`<span class="w98-menu-item">${m}</span>`).join('')}</div>`;
       break;
     }
+    case 'image': {
+  const imgSrc = comp.imagePath ? comp.imagePath : '';
+  if (imgSrc) {
+    inner = `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain;pointer-events:none;" onerror="this.onerror=null;this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;border:1px dashed #808080;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;\\'>[Error Imagen]</div>';">`;
+  } else {
+    inner = `<div style="width:100%;height:100%;border:1px dashed #808080;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666;font-family:Tahoma">[Imagen]</div>`;
+  }
+  break;
+}
     default:
       inner = '';
   }
@@ -273,6 +284,12 @@ function showProps(comp){
   if(comp.type==='separator'){
     extra=`<div class="prop-row"><label style="font-size:11px;color:var(--text2)"><input type="checkbox" ${comp.separatorH?'checked':''} onchange="setProp(${comp.id},'separatorH',this.checked)"> Horizontal (desmarcar = vertical)</label></div>`;
   }
+  if(comp.type === 'image'){
+  extra = `<div class="prop-row">
+    <label class="prop-label">Ruta o URL de Imagen</label>
+    <input class="prop-input" value="${comp.imagePath||''}" placeholder="Ej: src/assets/logo.png" oninput="setProp(${comp.id},'imagePath',this.value)">
+  </div>`;
+}
   let textRow='';
   if(!['combobox','list','panel','table','scrollpane','spinner','slider','progressbar','tabbedpane','separator','menubar'].includes(comp.type)){
     textRow=`<div class="prop-row"><label class="prop-label">Texto</label>
@@ -893,12 +910,18 @@ function parseJavaFile(src, filename){
     // === EXTRAER COLORES DESDE EL CÓDIGO JAVA ===
     // 1. Color de Fondo (setBackground)
     const bgMatch = src.match(new RegExp(`${varName}\\.setBackground\\(new\\s+Color\\((\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\)\\);`));
-    let bgColor = '#ffffff';
+    
+    // Si no está definido en el código Java, lo dejamos undefined para usar el estilo nativo
+    let bgColor = undefined; 
+
     if (bgMatch) {
       const r = parseInt(bgMatch[1]).toString(16).padStart(2, '0');
       const g = parseInt(bgMatch[2]).toString(16).padStart(2, '0');
       const b = parseInt(bgMatch[3]).toString(16).padStart(2, '0');
       bgColor = `#${r}${g}${b}`;
+    } else if (type === 'textfield' || type === 'textarea' || type === 'table' || type === 'list' || type === 'combobox') {
+      // Únicamente forzamos blanco en componentes de entrada de texto/datos si no tienen color explícito
+      bgColor = '#ffffff';
     }
 
     // 2. Color de Texto (setForeground)
